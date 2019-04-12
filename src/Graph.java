@@ -79,8 +79,9 @@ public class Graph {
             items.add(new Item(name, description));
         }
 
-        public void addItem(Item item){
+        public boolean addItem(Item item){
             items.add(item);
+            return true;
         }
 
         public Item removeItem(String name){

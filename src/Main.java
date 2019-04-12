@@ -24,7 +24,7 @@ public class Main {
             initializeCreatures(creatures, p, g);
         }
 
-        String response = "";
+        String[] response;
         Scanner s = new Scanner(System.in);
 
 
@@ -37,57 +37,30 @@ public class Main {
             }
 
             System.out.println("You are currently in the " + currentRoom.getName() + ", " + currentRoom.getDescription());
-
-            for(int i =0 ; i < g.getNodes().size(); i ++){
-                Graph.Node node = g.getNodes().get(i);
-                System.out.println("The " + node.getName() + " has ");
-                node.displayCreatures();
-            }
-
             System.out.println("You can go to a room, look, add new rooms or items, or quit. What do you want to do?");
-            response = s.nextLine();
 
-            String[] words = response.split(" ");
+            response = s.nextLine().split(" ");
+            response = s.nextLine().split(" ");
+            Command command = parseCommand(response, g, p);
 
-            if(words[0].equals("go") && words[1].equals("to")){
-                if(p.goToRoom(words[2]) == false) System.out.println(words[2] + " is not a room");
-
-            } else if(words[0].equals("look")){
-                System.out.println("neighbors: " + currentRoom.getNeighborNames());
-                System.out.println("items in room: " + currentRoom.getItemNames());
-                System.out.println("items you have: " + p.getItemNames());
-
-            } else if(words[0].equals("add") && words[1].equals("room")){
-                String response2 = "";
-                System.out.println("write a description");
-                response2 = s.nextLine();
-
-                g.addNode(words[2], response2);
-                g.addDirectedEdge(currentRoom.getName(), words[2]);
-
-            } else if (words[0].equals("take")) {
-                p.addItem(currentRoom.removeItem(words[1]));
-
-            } else if(words[0].equals("add") && words[1].equals("item")){
-                String response3 = "";
-                System.out.println("write a description");
-                response3 = s.nextLine();
-
-                currentRoom.addItem(words[2], response3);
-
-            } else if(words[0].equals("drop")){
-                currentRoom.addItem(p.removeItem(words[1]));
-
-            } else if (words[0].equals("quit")) {
-                break;
-
-            } else {
-                System.out.println("You can go to a room, look at the existing neighbors and items, add a new room, or quit");
+            boolean success = command.execute();
+            if (success == false) {
+                System.out.println("You can go to a room, look, add new rooms or items, or quit. What do you want to do?");
             }
 
         } while(!response.equals("quit"));
 
 
+    }
+
+    private static Command parseCommand(String[] userString, Graph graph, Player player){
+        if (userString[0].equals("go") && userString[1].equals("to")) return new GoToCommand(userString, player);
+        if (userString[0].equals("look")) return new LookCommand(graph, userString, player);
+        if (userString[0].equals("add") && userString[1].equals("room")) return new AddRoomCommand(userString, graph, player);
+        if (userString[0].equals("take")) return new TakeCommand(userString, player);
+        if (userString[0].equals("drop")) return new DropCommand(userString, player);
+        if(userString[0].equals("add") && userString[1].equals("item")) return new AddItemCommand(userString, player);
+        else return null;
     }
 
     private static void initializeCreatures(ArrayList<Creature> creatures, Player p, Graph g) {
