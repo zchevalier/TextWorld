@@ -2,14 +2,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Graph {
-    private HashMap<String, Node> nodes;
+    private ArrayList<Node> nodes;
+    private String name;
+    private String description;
+    private Player player;
 
     public Graph(){
-        nodes = new HashMap<>();
+        nodes = new ArrayList<>();
+    }
+
+    public ArrayList<Node> getNodes(){
+        return this.nodes;
     }
 
     public void addNode(String name, String description) {
-        nodes.put(name, new Node(name, description));
+        nodes.add(new Node(name, description));
     }
 
     public void addDirectedEdge(String name1, String name2) {
@@ -26,7 +33,7 @@ public class Graph {
     }
 
     public Node getNode(String name) {
-        for(Node node : nodes.values()){
+        for(Node node : nodes){
             if(node.getName().equals(name)){
                 return node;
             }
@@ -152,6 +159,18 @@ public class Graph {
 
         public void addCreature(Creature c){
             creatures.add(c);
+        }
+
+        public void displayCreatures(){
+            int numChickens = 0;
+            int numWumpus = 0;
+            int numPopstars = 0;
+            for(int i = 0; i < creatures.size(); i ++){
+                if(creatures.get(i).getName().equals("chicken")) numChickens ++;
+                if(creatures.get(i).getName().equals("wumpus")) numWumpus ++;
+                if(creatures.get(i).getName().equals("popstar")) numPopstars ++;
+            }
+            System.out.print(numChickens + " chickens, " + numWumpus + " wumpus, " + numPopstars + " popstars");
         }
     }
 }

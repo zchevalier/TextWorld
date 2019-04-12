@@ -5,9 +5,10 @@ public class Player {
     ArrayList<Item> items;
     Graph.Node currentRoom;
 
-    public Player(String name, String description) {
+    public Player(String name, String description, Graph.Node currentRoom) {
         this.name = name;
         this.description = description;
+        this.currentRoom = currentRoom;
         items = new ArrayList<>();
     }
 

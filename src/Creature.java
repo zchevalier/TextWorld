@@ -9,6 +9,7 @@ public abstract class Creature {
 
     public Creature (Graph.Node currentRoom, String name, String description, Player player){
         this.currentRoom = currentRoom;
+        currentRoom.addCreature(this);
         this.name = name;
         this.description = description;
         this.player = player;
@@ -41,8 +42,16 @@ public abstract class Creature {
         changeRooms(nextRoom);
     }
 
+    public void moveRandom(ArrayList<Graph.Node> roomsToGo, ArrayList<Graph.Node> roomsToAvoid){
+        if(roomsToAvoid.size() == 0 || roomsToGo.size() == 0) moveRandom();
+        else {
+            int randIndex = (int)(Math.random()*roomsToGo.size());
+            Graph.Node nextRoom = roomsToGo.get(randIndex);
+            changeRooms(nextRoom);
+        }
+    }
+
     public void changeRooms(Graph.Node nextRoom){
-        System.out.println("next room: " + nextRoom.getName());
         currentRoom.removeCreature(this);
         setCurrentRoom(nextRoom);
         currentRoom.addCreature(this);

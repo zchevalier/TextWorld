@@ -12,7 +12,6 @@ public class Wumpus extends Creature {
     }
 
     public void moveAway(){
-        System.out.println("player room: " + getPlayerRoom());
         Graph.Node playerRoom = getPlayerRoom();
         Graph.Node wumpusRoom = this.currentRoom;
 
@@ -26,11 +25,6 @@ public class Wumpus extends Creature {
             } else roomsToGo.add(wumpusRoom.getNeighbors().get(i));
         }
 
-        if(roomsToAvoid.size() == 0 || roomsToGo.size() == 0) moveRandom();
-        else {
-            int randIndex = (int)(Math.random()*roomsToGo.size());
-            Graph.Node nextRoom = roomsToGo.get(randIndex);
-            changeRooms(nextRoom);
-        }
+        moveRandom(roomsToGo, roomsToAvoid);
     }
 }

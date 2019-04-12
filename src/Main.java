@@ -6,10 +6,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
 
-        // build graph
-
         Graph g = new Graph();
-        Player p = new Player("Bill", "a player");
 
         g.addNode("hall", "a long dark hallway");
         g.addNode("closet", "a dark, dark, closet");
@@ -20,35 +17,34 @@ public class Main {
 
         g.getNode("hall").addItem("box", "a big cardboard box");
 
-        p.setCurrentRoom(g.getNode("hall"));
-        System.out.println(p.getCurrentRoom().getName());
+        Player p = new Player("Bill", "a player", g.getNode("hall"));
 
-        ArrayList<Creature> chickens = new ArrayList<>();
+        ArrayList<Creature> creatures = new ArrayList<>();
         for(int i = 0; i < 10; i ++){
-            Creature chicken = new Chicken(g.getNode("hall"), "chicken", "a strange chicken", p);
-            chickens.add(chicken);
+            initializeCreatures(creatures, p, g);
         }
-        Creature wumpus = new Wumpus(g.getNode("hall"), "wumpus", "a wumpus", p);
 
         String response = "";
         Scanner s = new Scanner(System.in);
 
 
         do{
-            //display the room and commands
 
             Graph.Node currentRoom = p.getCurrentRoom();
 
-            System.out.println("You are currently in the " + currentRoom.getName() + ", " + currentRoom.getDescription());
-            for(int i =0 ; i < chickens.size(); i ++){
-                chickens.get(i).move();
-                System.out.println("A chicken is in the " + chickens.get(i).getCurrentRoom().getName());
+            for(Creature c : creatures){
+                c.move();
             }
-            System.out.println("The wumpus is in the " + wumpus.getCurrentRoom().getName());
-            wumpus.move();
-            System.out.println("You can go to a room, look at the existing neighbors and items, add new rooms or items, or quit");
 
-            System.out.println("What do you want to do?");
+            System.out.println("You are currently in the " + currentRoom.getName() + ", " + currentRoom.getDescription());
+
+            for(int i =0 ; i < g.getNodes().size(); i ++){
+                Graph.Node node = g.getNodes().get(i);
+                System.out.println("The " + node.getName() + " has ");
+                node.displayCreatures();
+            }
+
+            System.out.println("You can go to a room, look, add new rooms or items, or quit. What do you want to do?");
             response = s.nextLine();
 
             String[] words = response.split(" ");
@@ -92,5 +88,14 @@ public class Main {
         } while(!response.equals("quit"));
 
 
+    }
+
+    private static void initializeCreatures(ArrayList<Creature> creatures, Player p, Graph g) {
+        Creature chicken = new Chicken(g.getNode("hall"), "chicken", "a strange chicken", p);
+        creatures.add(chicken);
+        Creature wumpus = new Wumpus(g.getNode("closet"), "wumpus", "a weird wumpus", p);
+        creatures.add(wumpus);
+        Creature popstar = new Popstar(g.getNode("dungeon"), "popstar", "a scary popstar", p);
+        creatures.add(popstar);
     }
 }
